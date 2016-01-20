@@ -1,2 +1,2 @@
 # Cplayer
-A simple music player wrappered by C
+A simple music player write in C
