@@ -61,9 +61,12 @@ int main(int argc, char *argv[])
         }
         getch();
         pclose(pp);
-        destroyCDKScreen (cdkscreen);
-        endwin();
-        endCDK ();
     }
+
+    /* Clean up. */
+    destroyCDKScreen (cdkscreen);
+    endwin();
+    endCDK ();
+    freeChar(filename);
     return 0;
 }

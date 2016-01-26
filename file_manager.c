@@ -23,6 +23,13 @@ char *init_file_selector(CDKSCREEN *cdkscreen)
     /* Activate the file selector. */
     filename = copyChar(activateCDKFselect(fSelect, 0));
 
+    /* Check how the person exited from the widget. */
+    if (fSelect->exitType == vESCAPE_HIT)
+    {
+        destroyCDKFselect (fSelect);
+        return filename;
+    }
+
     /* Clean up. */
     destroyCDKFselect(fSelect);
 
