@@ -59,3 +59,21 @@ int index_of(char src[], char str[]) {
       j = 0;
    }
 }
+
+char *extract_file_name(char *path) {
+    int i, j, index;
+    i = 0, j = 0, index = 0;
+    while (path[i] != '\0') {
+        if (path[i] == '/')
+            index = i;
+        i++;
+    }
+    char *r = malloc(strlen(path) - index + 1);
+    index++;
+    while(path[index] != '\0')
+    {
+        r[j++] = path[index++];
+    }
+    r[j] = '\0';
+    return r;
+}
