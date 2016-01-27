@@ -14,7 +14,7 @@ A simple music player written in C.
 
 ####Compile:
 
-- **demo: **
+- **demo:**
     `gcc -g -O2  demo.c file_manager.c utils.c -o cplayer -lcdk -lncurses`
-- **db_demo: **
+- **db_demo:**
     `gcc -g -O2 db_test.c db.c sqlite3/sqlite3.c -o db_test -lpthread -ldl`
