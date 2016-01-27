@@ -4,8 +4,7 @@
 #include "file_manager.h"
 #include "utils.h"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     CDKSCREEN *cdkscreen = 0;
     WINDOW *cursesWin = 0;
     /* Set up CDK. */
@@ -15,8 +14,7 @@ int main(int argc, char *argv[])
 
     char *filename = 0;
     filename = init_file_selector(cdkscreen);
-    if(filename != 0)
-    {
+    if (filename != 0) {
         /* initscr(); */
         cbreak();
         noecho();
@@ -28,7 +26,7 @@ int main(int argc, char *argv[])
         mkfifo(FIFO, 0666);
         const char *base = "mplayer -slave -quiet -input file=/tmp/my_fifo ";
         const char *tail = " < /dev/null 2>&1 &";
-        char *result = malloc(strlen(base)+strlen(f_name)+strlen(tail)+1);
+        char *result = malloc(strlen(base) + strlen(f_name) + strlen(tail) + 1);
         strcpy(result, base);
         strcat(result, f_name);
         strcat(result, tail);
@@ -38,23 +36,19 @@ int main(int argc, char *argv[])
         int d = fileno(pp);
         int flags = fcntl(d, F_GETFL, 0);
         fcntl(d, F_SETFL, O_NONBLOCK);
-        if( pp == NULL )
-        {
+        if (pp == NULL) {
             printw("popen() error!/n");
             exit(1);
         }
         printw("popen success\n");
         int ch;
         sleep(1);
-        while(fgets(buf, sizeof buf, pp))
-        {
+        while (fgets(buf, sizeof buf, pp)) {
             printw("reading\n");
             mvprintw(0, 0, "%s\n", buf);
         }
-        while((ch = getch()) != 'q')
-        {
-            while(fgets(buf, sizeof buf, pp))
-            {
+        while ((ch = getch()) != 'q') {
+            while (fgets(buf, sizeof buf, pp)) {
                 printw("reading\n");
                 mvprintw(0, 0, "%s\n", buf);
             }
@@ -64,9 +58,9 @@ int main(int argc, char *argv[])
     }
 
     /* Clean up. */
-    destroyCDKScreen (cdkscreen);
+    destroyCDKScreen(cdkscreen);
     endwin();
-    endCDK ();
+    endCDK();
     freeChar(filename);
     return 0;
 }

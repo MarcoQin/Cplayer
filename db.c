@@ -8,58 +8,52 @@ static sqlite3_stmt *insert_song_stmt;
 static sqlite3_stmt *get_song_path_stmt;
 static sqlite3_stmt *update_song_state_stmt;
 static sqlite3_stmt *delete_song_stmt;
-static const char *reset_song_state_query =
-    "update songs set is_playing = 0";
+static const char *reset_song_state_query = "update songs set is_playing = 0";
 
-void db_enable() {
-    db_enabled = 1;
-}
+void db_enable() { db_enabled = 1; }
 
-void db_disable() {
-    db_enabled = 0;
-}
+void db_disable() { db_enabled = 0; }
 
-int get_db_enabled() {
-    return db_enabled;
-}
+int get_db_enabled() { return db_enabled; }
 
 int db_init(char *path) {
     if (!db_enabled) {
         return 0;
     }
-    static const char *create_query =
-        "create table if not exists songs ("
-        "   id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "   name VARCHAR(255) NOT NULL,"
-        "   path VARCHAR(512),"
-        "   is_playing INTEGER(2) DEFAULT 0"
-        ");";
-    static const char *insert_song_query =
-        "insert into songs (name, path) "
-        "values (?, ?);";
+    static const char *create_query = "create table if not exists songs ("
+                                      "   id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                      "   name VARCHAR(255) NOT NULL,"
+                                      "   path VARCHAR(512),"
+                                      "   is_playing INTEGER(2) DEFAULT 0"
+                                      ");";
+    static const char *insert_song_query = "insert into songs (name, path) "
+                                           "values (?, ?);";
     static const char *get_song_path_query =
         "select path from songs where id = ?;";
     static const char *update_song_state_query =
         "update songs set is_playing = ? where id = ?;";
-    static const char *delete_song_query =
-        "delete from songs where id = ?;";
+    static const char *delete_song_query = "delete from songs where id = ?;";
     int rc;
     rc = sqlite3_open(path, &db);
-    if (rc) return rc;
+    if (rc)
+        return rc;
     rc = sqlite3_exec(db, create_query, NULL, NULL, NULL);
-    if (rc) return rc;
-    rc = sqlite3_prepare_v2(
-        db, insert_song_query, -1, &insert_song_stmt, NULL);
-    if (rc) return rc;
-    rc = sqlite3_prepare_v2(
-        db, get_song_path_query, -1, &get_song_path_stmt, NULL);
-    if (rc) return rc;
-    rc = sqlite3_prepare_v2(
-        db, update_song_state_query, -1, &update_song_state_stmt, NULL);
-    if (rc) return rc;
-    rc = sqlite3_prepare_v2(
-        db, delete_song_query, -1, &delete_song_stmt, NULL);
-    if (rc) return rc;
+    if (rc)
+        return rc;
+    rc = sqlite3_prepare_v2(db, insert_song_query, -1, &insert_song_stmt, NULL);
+    if (rc)
+        return rc;
+    rc = sqlite3_prepare_v2(db, get_song_path_query, -1, &get_song_path_stmt,
+                            NULL);
+    if (rc)
+        return rc;
+    rc = sqlite3_prepare_v2(db, update_song_state_query, -1,
+                            &update_song_state_stmt, NULL);
+    if (rc)
+        return rc;
+    rc = sqlite3_prepare_v2(db, delete_song_query, -1, &delete_song_stmt, NULL);
+    if (rc)
+        return rc;
     /* sqlite3_exec(db, "begin;", NULL, NULL, NULL); */
     return 0;
 }
@@ -119,5 +113,6 @@ char *get_song_path(int id) {
 }
 
 int db_load_songs(char ***result, int *nrow, int *ncolumn, char **pzErrmsg) {
-    return sqlite3_get_table(db, "select * from songs", result, nrow, ncolumn, pzErrmsg);
+    return sqlite3_get_table(db, "select * from songs", result, nrow, ncolumn,
+                             pzErrmsg);
 }

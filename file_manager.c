@@ -1,8 +1,6 @@
 #include "file_manager.h"
 
-
-char *init_file_selector(CDKSCREEN *cdkscreen)
-{
+char *init_file_selector(CDKSCREEN *cdkscreen) {
     CDKFSELECT *fSelect = 0;
     const char *title = "<C>Pick a MUSIC file.";
     const char *label = "File: ";
@@ -10,23 +8,22 @@ char *init_file_selector(CDKSCREEN *cdkscreen)
     char *filename = 0;
 
     /* Get the filename */
-    fSelect = newCDKFselect(cdkscreen, CENTER, CENTER, 20, 65,
-            title, label, A_NORMAL, '_', A_REVERSE,
-            "</5>", "</48>", "</N>", "</N>", TRUE, FALSE);
+    fSelect = newCDKFselect(cdkscreen, CENTER, CENTER, 20, 65, title, label,
+                            A_NORMAL, '_', A_REVERSE, "</5>", "</48>", "</N>",
+                            "</N>", TRUE, FALSE);
     /*
      * Set the starting directory. This is not neccessary because when
      * the file selector starts it uses the present directory as a default.
      */
-    setCDKFselect(fSelect, directory, A_NORMAL, '.', A_REVERSE,
-            "</5>", "</48>", "</N>", "</N>", ObjOf (fSelect)->box);
+    setCDKFselect(fSelect, directory, A_NORMAL, '.', A_REVERSE, "</5>", "</48>",
+                  "</N>", "</N>", ObjOf(fSelect)->box);
 
     /* Activate the file selector. */
     filename = copyChar(activateCDKFselect(fSelect, 0));
 
     /* Check how the person exited from the widget. */
-    if (fSelect->exitType == vESCAPE_HIT)
-    {
-        destroyCDKFselect (fSelect);
+    if (fSelect->exitType == vESCAPE_HIT) {
+        destroyCDKFselect(fSelect);
         return filename;
     }
 
