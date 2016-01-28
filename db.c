@@ -113,6 +113,6 @@ char *get_song_path(int id) {
 }
 
 int db_load_songs(char ***result, int *nrow, int *ncolumn, char **pzErrmsg) {
-    return sqlite3_get_table(db, "select * from songs", result, nrow, ncolumn,
+    return sqlite3_get_table(db, "select id, name from songs", result, nrow, ncolumn,
                              pzErrmsg);
 }
