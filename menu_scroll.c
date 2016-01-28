@@ -34,6 +34,7 @@ int main() {
     keypad(stdscr, TRUE);
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_CYAN, COLOR_BLACK);
+    init_pair(3, COLOR_MAGENTA, COLOR_BLACK);
 
     /** db test **/
     db_enable();
@@ -53,7 +54,10 @@ int main() {
             for (j = 0; j < ncol; j++) {
                 if (j == 1)
                 {
-                    choices[i] = result[index];
+                    /* choices[i] = result[index]; */
+                    char *r = malloc(1 + strlen(result[index-1])+ strlen(result[index]));
+                    sprintf(r, "%s.%s", result[index-1], result[index]);
+                    choices[i] = r;
                 }
                 index++;
             }
@@ -95,11 +99,15 @@ int main() {
 
     /* Print a border around the main window and print a title */
     box(my_menu_win, 0, 0);
-    print_in_middle(my_menu_win, 1, 0, 80, "Song List", COLOR_PAIR(1));
-    mvwaddch(my_menu_win, 2, 0, ACS_LTEE);
+    print_in_middle(my_menu_win, 1, 0, 80, "Song List", COLOR_PAIR(2));
+    /* mvwaddch(my_menu_win, 2, 0, ACS_LTEE); */
     /* mvwhline(my_menu_win, 2, 1, ACS_HLINE, 38); */
-    mvwhline(my_menu_win, 2, 1, ACS_HLINE, 80);
-    mvwaddch(my_menu_win, 2, 39, ACS_RTEE);
+    mvwhline(my_menu_win, 2, 1, ACS_HLINE, 78);
+    /* mvwaddch(my_menu_win, 2, 80, ACS_RTEE); */
+
+    set_menu_fore(my_menu, COLOR_PAIR(2) | A_REVERSE);
+    set_menu_back(my_menu, COLOR_PAIR(2));
+    set_menu_grey(my_menu, COLOR_PAIR(3));
 
     /* Post the menu */
     post_menu(my_menu);
