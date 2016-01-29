@@ -71,3 +71,11 @@ char *extract_file_name(char *path) {
     r[j] = '\0';
     return r;
 }
+
+int extract_song_id(char *name) {
+    int i;
+    i = 0;
+    char id[3];
+    while (name[i] != '.') {
+    }
+}
