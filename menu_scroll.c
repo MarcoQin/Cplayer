@@ -4,6 +4,7 @@
 #include <menu.h>
 #include <locale.h>
 #include "db.h"
+#include "utils.h"
 #include <cdk.h>
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 #define CTRLD 4
@@ -137,9 +138,13 @@ int main() {
         case 10: /* Enter */
             move(0, 0);
             clrtoeol();
-            mvwprintw(stdscr, 0, 0, "Item selected is : %s",
+            mvprintw(0, 0, "Item selected is : %s",
                     item_name(current_item(my_menu)));
-            printf("%s\n", item_name(current_item(my_menu)));
+            mvprintw(2, 0, "%s\n", item_name(current_item(my_menu)));
+            int id = extract_song_id(item_name(current_item(my_menu)));
+            mvprintw(4, 0, "Id is: %d\n", id);
+            mvprintw(5, 0, "Path is: %s\n", get_song_path(id));
+            refresh();
             pos_menu_cursor(my_menu);
             break;
         }
