@@ -75,7 +75,11 @@ char *extract_file_name(char *path) {
 int extract_song_id(char *name) {
     int i;
     i = 0;
-    char id[3];
+    char id[5];
     while (name[i] != '.') {
+        id[i] = name[i];
+        i++;
     }
+    id[i] = '\0';
+    return atoi(id);
 }
