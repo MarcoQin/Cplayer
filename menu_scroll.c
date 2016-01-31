@@ -86,6 +86,14 @@ int main() {
 
     /* Create the window to be associated with the menu */
     my_menu_win = newwin(20, 80, 10, 20);
+
+    /* WINDOW *label = newwin(0, 1, 5, 5); */
+    WINDOW *label = subwin(stdscr, 5, 80, 2, 20);
+    box(label, 0, 0);
+    print_in_middle(label, 0, 0, 0, "hello", COLOR_PAIR(2));
+    wrefresh(label);
+    refresh();
+
     keypad(my_menu_win, TRUE);
 
     /* Set main window and sub window */
@@ -138,12 +146,16 @@ int main() {
         case 10: /* Enter */
             move(0, 0);
             clrtoeol();
-            mvprintw(0, 0, "Item selected is : %s",
-                    item_name(current_item(my_menu)));
-            mvprintw(2, 0, "%s\n", item_name(current_item(my_menu)));
+            /* mvprintw(0, 0, "Item selected is : %s", */
+                    /* item_name(current_item(my_menu))); */
+            /* mvprintw(2, 0, "%s\n", item_name(current_item(my_menu))); */
             int id = extract_song_id(item_name(current_item(my_menu)));
-            mvprintw(4, 0, "Id is: %d\n", id);
-            mvprintw(5, 0, "Path is: %s\n", get_song_path(id));
+            /* mvprintw(4, 0, "Id is: %d\n", id); */
+            /* mvprintw(5, 0, "Path is: %s\n", get_song_path(id)); */
+            int y, x;
+            y =0; x =0;
+            mvwprintw(label, 1, 30, "Id is: %d", id);
+            wrefresh(label);
             refresh();
             pos_menu_cursor(my_menu);
             break;
