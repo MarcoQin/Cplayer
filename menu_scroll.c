@@ -91,7 +91,13 @@ int main() {
     WINDOW *label = subwin(stdscr, 5, 80, 2, 20);
     box(label, 0, 0);
     print_in_middle(label, 0, 0, 0, "hello", COLOR_PAIR(2));
+
+    WINDOW *button = subwin(stdscr, 3, 10, 7, 20);
+    box(button, 0, 0);
+    print_in_middle(button, 1, 1, 5, "start", COLOR_PAIR(3));
+
     wrefresh(label);
+    wrefresh(button);
     refresh();
 
     keypad(my_menu_win, TRUE);
@@ -152,8 +158,6 @@ int main() {
             int id = extract_song_id(item_name(current_item(my_menu)));
             /* mvprintw(4, 0, "Id is: %d\n", id); */
             /* mvprintw(5, 0, "Path is: %s\n", get_song_path(id)); */
-            int y, x;
-            y =0; x =0;
             mvwprintw(label, 1, 30, "Id is: %d", id);
             wrefresh(label);
             refresh();
