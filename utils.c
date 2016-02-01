@@ -72,7 +72,7 @@ char *extract_file_name(char *path) {
     return r;
 }
 
-int extract_song_id(char *name) {
+int extract_song_id(const char *name) {
     int i;
     i = 0;
     char id[5];
