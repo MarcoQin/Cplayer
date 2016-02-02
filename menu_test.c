@@ -3,6 +3,7 @@
 #include <string.h>
 #include "list.h"
 #include "db.h"
+#include "player_core.h"
 
 int main()
 {
@@ -58,10 +59,17 @@ int main()
         case KEY_PPAGE:
             handle_menu_scroll(c);
             break;
+        case 'q':
+            stop_song();
+            break;
+        case 'p':
+            pause_song();
+            break;
         case 10: /* Enter */
             move(0, 0);
             clrtoeol();
             int id = get_current_selected_song_id();
+            load_song(get_song_path(id));
             mvprintw(4, 0, "Id is: %d\n", id);
             mvprintw(5, 0, "Path is: %s\n", get_song_path(id));
             refresh();
@@ -71,6 +79,7 @@ int main()
         wrefresh(my_menu_win);
     }
 
+    free_player();
     destory_menu();
     free_items(n_choices);
 

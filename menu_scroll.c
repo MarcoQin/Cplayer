@@ -92,6 +92,7 @@ int main() {
     box(label, 0, 0);
     print_in_middle(label, 0, 0, 0, "hello", COLOR_PAIR(2));
 
+
     WINDOW *button = subwin(stdscr, 3, 10, 7, 20);
     box(button, 0, 0);
     print_in_middle(button, 1, 1, 5, "start", COLOR_PAIR(3));
@@ -155,10 +156,13 @@ int main() {
             /* mvprintw(0, 0, "Item selected is : %s", */
                     /* item_name(current_item(my_menu))); */
             /* mvprintw(2, 0, "%s\n", item_name(current_item(my_menu))); */
-            int id = extract_song_id(item_name(current_item(my_menu)));
+            const char *song_name = item_name(current_item(my_menu));
+            int id = extract_song_id(song_name);
             /* mvprintw(4, 0, "Id is: %d\n", id); */
             /* mvprintw(5, 0, "Path is: %s\n", get_song_path(id)); */
             mvwprintw(label, 1, 30, "Id is: %d", id);
+            mvwprintw(label, 2, 0, "Path is: %s\n", get_song_path(id));
+            mvwprintw(label, 3, 0, "Name is: %s\n", song_name);
             wrefresh(label);
             refresh();
             pos_menu_cursor(my_menu);
@@ -177,6 +181,8 @@ int main() {
     sqlite3_free(errmsg);
     db_close();
     db_disable();
+
+
 
     endwin();
 }
