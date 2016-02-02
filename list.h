@@ -11,4 +11,5 @@ void destory_menu();
 void free_items(int n_choices);
 void handle_menu_scroll(int ch);
 int get_current_selected_song_id();
+const char *get_current_song_name();
 #endif

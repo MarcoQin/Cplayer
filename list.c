@@ -87,6 +87,12 @@ int get_current_selected_song_id()
     return id;
 }
 
+const char *get_current_song_name()
+{
+    const char *name = item_name(current_item(my_menu));
+    return name;
+}
+
 void print_in_middle(WINDOW *win, int starty, int startx, int width,
                      char *string, chtype color) {
     int length, x, y;
