@@ -2,15 +2,21 @@
 #include <stdio.h>
 #include <string.h>
 #include "db.h"
+#include "utils.h"
 
 static int db_enabled = 0;
 
 static sqlite3 *db;
 static sqlite3_stmt *insert_song_stmt;
 static sqlite3_stmt *get_song_path_stmt;
+static sqlite3_stmt *get_current_playing_song_stmt;
+static sqlite3_stmt *get_next_song_id_stmt;
+static sqlite3_stmt *get_previous_song_id_stmt;
 static sqlite3_stmt *update_song_state_stmt;
 static sqlite3_stmt *delete_song_stmt;
-static const char *reset_song_state_query = "update songs set is_playing = 0";
+static sqlite3_stmt *get_first_song_id_stmt;
+static sqlite3_stmt *get_last_song_id_stmt;
+static const char *reset_song_state_query = "update songs set is_playing = 0;";
 
 void db_enable() { db_enabled = 1; }
 
@@ -32,9 +38,19 @@ int db_init(const char *path) {
                                            "values (?, ?);";
     static const char *get_song_path_query =
         "select path from songs where id = ?;";
+    static const char *get_current_playing_song_query =
+        "select id from songs where is_playing = 1;";
+    static const char *get_next_song_id_query =
+        "select id from songs where id > ? order by id limit 1;";
+    static const char *get_previous_song_id_query =
+        "select id from songs where id < ? order by id desc limit 1;";
     static const char *update_song_state_query =
         "update songs set is_playing = ? where id = ?;";
     static const char *delete_song_query = "delete from songs where id = ?;";
+    static const char *get_first_song_id_query =
+                    "select id from songs limit 1;";
+    static const char *get_last_song_id_query =
+                    "select id from songs order by id desc limit 1;";
     int rc;
     rc = sqlite3_open(path, &db);
     if (rc)
@@ -47,6 +63,26 @@ int db_init(const char *path) {
         return rc;
     rc = sqlite3_prepare_v2(db, get_song_path_query, -1, &get_song_path_stmt,
                             NULL);
+    if (rc)
+        return rc;
+    rc = sqlite3_prepare_v2(db, get_current_playing_song_query, -1, &get_current_playing_song_stmt,
+                            NULL);
+    if (rc)
+        return rc;
+    rc = sqlite3_prepare_v2(db, get_next_song_id_query, -1, &get_next_song_id_stmt,
+                            NULL);
+    if (rc)
+        return rc;
+    rc = sqlite3_prepare_v2(db, get_previous_song_id_query, -1, &get_previous_song_id_stmt,
+                            NULL);
+    if (rc)
+        return rc;
+    rc = sqlite3_prepare_v2(db, get_first_song_id_query, -1,
+                            &get_first_song_id_stmt, NULL);
+    if (rc)
+        return rc;
+    rc = sqlite3_prepare_v2(db, get_last_song_id_query, -1,
+                            &get_last_song_id_stmt, NULL);
     if (rc)
         return rc;
     rc = sqlite3_prepare_v2(db, update_song_state_query, -1,
@@ -114,6 +150,40 @@ char *get_song_path(int id) {
     return path;
 }
 
+int get_next_or_previous_song_id(int type) {
+    int id = 0;
+    if (!db_enabled) {
+        return id;
+    }
+    sqlite3_reset(get_current_playing_song_stmt);
+    if (sqlite3_step(get_current_playing_song_stmt) == SQLITE_ROW) {
+        id = sqlite3_column_int(get_current_playing_song_stmt, 0);
+    }
+    if (type == NEXT)
+    {
+        sqlite3_reset(get_next_song_id_stmt);
+        sqlite3_bind_int(get_next_song_id_stmt, 1, id);
+        if (sqlite3_step(get_next_song_id_stmt) == SQLITE_ROW) {
+            id = sqlite3_column_int(get_next_song_id_stmt, 0);
+        } else {
+            if (sqlite3_step(get_first_song_id_stmt) == SQLITE_ROW) {
+                id = sqlite3_column_int(get_first_song_id_stmt, 0);
+            }
+        }
+    } else {
+        sqlite3_reset(get_previous_song_id_stmt);
+        sqlite3_bind_int(get_previous_song_id_stmt, 1, id);
+        if (sqlite3_step(get_previous_song_id_stmt) == SQLITE_ROW) {
+            id = sqlite3_column_int(get_previous_song_id_stmt, 0);
+        } else {
+            if (sqlite3_step(get_last_song_id_stmt) == SQLITE_ROW) {
+                id = sqlite3_column_int(get_last_song_id_stmt, 0);
+            }
+        }
+    }
+    return id;
+}
+
 int db_load_songs(char ***result, int *nrow, int *ncolumn, char **pzErrmsg) {
     return sqlite3_get_table(db, "select id, name from songs", result, nrow, ncolumn,
                              pzErrmsg);
@@ -131,8 +201,10 @@ int loading_choices(char **choices)
             for (j = 0; j < ncol; j++) {
                 if (j == 1)
                 {
-                    char *r = (char *)malloc(1 + strlen(result[index-1])+ strlen(result[index]));
-                    sprintf(r, "%s.%s", result[index-1], result[index]);
+                    /* char *r = (char *)malloc(1 + strlen(result[index-1])+ strlen(result[index])); */
+                    /* sprintf(r, "%s.%s", result[index-1], result[index]); */
+                    char *dot = ".";
+                    char *r = merge_str(result[index-1], dot, result[index]);
                     choices[i] = r;
                 }
                 index++;
