@@ -36,8 +36,8 @@ void stopping(int signum)
     }
     int id = get_next_or_previous_song_id(NEXT);
     load_song(id);
-    mvprintw(0, 0, "next id is: %d\n", id);
-    refresh();
+    /* mvprintw(0, 0, "next id is: %d\n", id); */
+    /* refresh(); */
     sub_pro();
 }
 
