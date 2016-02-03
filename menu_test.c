@@ -34,7 +34,10 @@ void stopping(int signum)
     {
         quit(2);
     }
-    load_song(get_song_path(49));
+    int id = get_next_or_previous_song_id(NEXT);
+    load_song(id);
+    mvprintw(0, 0, "next id is: %d\n", id);
+    refresh();
     sub_pro();
 }
 
@@ -103,6 +106,9 @@ int main()
     char *choices[512];
     n_choices = loading_choices(choices);
 
+    /* char **choices = 0; */
+    /* n_choices = loading_choices(&choices); */
+
     init_song_menu(choices, n_choices);
 
 
@@ -130,11 +136,12 @@ int main()
         case 'q':
             quit(2);
             break;
-        case 'p':
+        case 32:  /* space key */
             pause_song();
             break;
         case 'a':
             filename = init_file_selector(stdscr);
+            sleep(1);
             destroyCDKFselect(fSelect);
             destroyCDKScreen(cdkscreen);
             if (filename != NULL)
@@ -159,11 +166,19 @@ int main()
             n_choices = loading_choices(choices);
             init_song_menu(choices, n_choices);
             break;
+        case 'n':
+            id = get_next_or_previous_song_id(NEXT);
+            load_song(id);
+            break;
+        case 'p':
+            id = get_next_or_previous_song_id(PREVIOUS);
+            load_song(id);
+            break;
         case 10: /* Enter */
             move(0, 0);
             clrtoeol();
             id = get_current_selected_song_id();
-            load_song(get_song_path(id));
+            load_song(id);
             /* mvprintw(4, 0, "Id is: %d\n", id); */
             /* mvprintw(5, 0, "Path is: %s\n", get_song_path(id)); */
             refresh();
