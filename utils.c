@@ -11,7 +11,7 @@ char *parse_p(char *s) {
         i++;
     }
     i = 0;
-    char *r = malloc(1 + total + strlen(s));
+    char *r = (char *)malloc(1 + total + strlen(s));
     while (s[i] != '\0') {
         if (s[i] == ' ') {
             r[j] = '\\';
@@ -63,7 +63,7 @@ char *extract_file_name(char *path) {
             index = i;
         i++;
     }
-    char *r = malloc(strlen(path) - index + 1);
+    char *r = (char *)malloc(strlen(path) - index + 2);
     index++;
     while (path[index] != '\0') {
         r[j++] = path[index++];
