@@ -83,3 +83,12 @@ int extract_song_id(const char *name) {
     id[i] = '\0';
     return atoi(id);
 }
+
+char *merge_str(char *base, char *middle, char *tail)
+{
+    char *result = (char *)malloc(strlen(base) + strlen(middle) + strlen(tail) + 1);
+    strcpy(result, base);
+    strcat(result, middle);
+    strcat(result, tail);
+    return result;
+}
