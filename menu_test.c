@@ -14,9 +14,10 @@
 pid_t parent_pid, child_pid, wpid;
 int status;
 
-void sighandler(int signum)
+void sub_pro();
+
+void quit(int signum)
 {
-   printf("Caught signal %d, coming out...\n", signum);
     free_player();
     destory_menu();
 
@@ -24,35 +25,49 @@ void sighandler(int signum)
     db_disable();
 
     endwin();
-   exit(1);
+    exit(1);
 }
+
+void stopping(int signum)
+{
+    if (status == STOP)  /* stop */
+    {
+        quit(2);
+    }
+    load_song(get_song_path(49));
+    sub_pro();
+}
+
 
 void sub_pro()
 {
+    if (child_pid)
+    {
+        kill(child_pid, SIGKILL);
+    }
     child_pid=fork();
     if (child_pid < 0)
         printf("error in fork!");
     else if (child_pid == 0) {
         int code = 0;
         parent_pid = getppid();
-        mvprintw(3, 0, "i am the child process, my process id is %d\n",getpid());
-        mvprintw(4, 0, "parent_pid %d\n", parent_pid);
-        mvprintw(5, 0, "pid is %d\n", pid);
-        refresh();
+        /* mvwprintw(stdscr, 3, 0, "i am the child process, my process id is %d\n",getpid()); */
+        /* mvwprintw(stdscr, 4, 0, "parent_pid %d\n", parent_pid); */
+        /* mvwprintw(stdscr, 5, 0, "pid is %d\n", pid); */
+        /* refresh(); */
         sleep(2);
         while(1)
         {
             code = kill(pid, 0);
             if (code == 0) {  // alive
-                mvprintw(1, 0, "code is: %d\n", code);
-                refresh();
+                /* mvwprintw(stdscr, 1, 0, "code is: %d\n", code); */
+                /* refresh(); */
                 sleep(2);
-                mvprintw(1, 0, "alive is: %d\n", code);
-                refresh();
+                /* mvwprintw(stdscr, 1, 0, "alive is: %d\n", code); */
+                /* refresh(); */
             } else {
-                mvprintw(1, 0, "will exit");
-                refresh();
-                /* kill(parent_pid, -2); */
+                /* mvwprintw(stdscr, 1, 0, "will exit"); */
+                /* refresh(); */
                 kill(parent_pid, SIGUSR1);
                 break;
             }
@@ -60,25 +75,16 @@ void sub_pro()
         exit(1);
     }
     else {
-        mvprintw(2, 0, "i am the parent process, my process id is %d\n",getpid());
-        refresh();
-        /* waitpid(child_pid, NULL, WNOHANG); */
+        /* mvprintw(2, 0, "i am the parent process, my process id is %d\n",getpid()); */
+        /* refresh(); */
         signal(SIGCHLD, SIG_IGN);
-        /* struct sigaction sigchld_action = { */
-          /* .sa_handler = SIG_DFL, */
-          /* .sa_flags = SA_NOCLDWAIT */
-        /* }; */
-        /* sigaction(SIGCHLD, &sigchld_action, NULL); */
-
-        /* while here test */
-        /* wpid = wait(&status); */
     }
 }
 
 int main()
 {
-    signal(SIGINT, sighandler);
-    signal(SIGUSR1, sighandler);
+    signal(SIGINT, quit);
+    signal(SIGUSR1, stopping);
     int n_choices, id;
     setlocale(LC_ALL, "");
     initscr();
@@ -113,8 +119,16 @@ int main()
         case KEY_PPAGE:
             handle_menu_scroll(c);
             break;
+        case KEY_RIGHT:
+        case 'l':
+            seek("20");
+            break;
+        case KEY_LEFT:
+        case 'h':
+            seek("-20");
+            break;
         case 'q':
-            stop_song();
+            quit(2);
             break;
         case 'p':
             pause_song();
@@ -160,14 +174,10 @@ int main()
         wrefresh(my_menu_win);
     }
 
-    free_player();
-    destory_menu();
 
     free_items(n_choices);
-    db_close();
-    db_disable();
 
-    endwin();
+    quit(2);
 
     return 0;
 }

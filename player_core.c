@@ -11,11 +11,6 @@
 #include "popen2.h"
 #include <signal.h>
 
-#define PLAYING 1
-#define STOP 0
-#define PAUSE 2
-#define ALIVE 0
-#define KILL 1
 
 int status = 0;  /* play status */
 int alive = KILL; /* pipe alive false */
@@ -78,7 +73,7 @@ void load_song(char *path)
 
 void stop_song()
 {
-    if (alive == ALIVE)
+    if (alive == ALIVE && is_alive() == ALIVE)
     {
         char *s = "stop\n";
         fd = open(FIFO, O_WRONLY);
@@ -90,13 +85,27 @@ void stop_song()
 
 void pause_song()
 {
-    if (alive == ALIVE)
+    if (alive == ALIVE && is_alive() == ALIVE)
     {
         char *s = "pause\n";
         fd = open(FIFO, O_WRONLY);
         write(fd, s, strlen(s));
         close(fd);
         status = status == PAUSE ? PLAYING : PAUSE;  /* playing status */
+    }
+}
+
+void seek(char *seconds)
+{
+    if (alive == ALIVE && is_alive() == ALIVE && status == PLAYING)
+    {
+        char *base = "seek ";
+        char *tail = "\n";
+        char *s = merge_str(base, seconds, tail);
+        fd = open(FIFO, O_WRONLY);
+        write(fd, s, strlen(s));
+        close(fd);
+        free(s);
     }
 }
 
