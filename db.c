@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "db.h"
 
@@ -16,7 +18,7 @@ void db_disable() { db_enabled = 0; }
 
 int get_db_enabled() { return db_enabled; }
 
-int db_init(char *path) {
+int db_init(const char *path) {
     if (!db_enabled) {
         return 0;
     }
@@ -115,4 +117,29 @@ char *get_song_path(int id) {
 int db_load_songs(char ***result, int *nrow, int *ncolumn, char **pzErrmsg) {
     return sqlite3_get_table(db, "select id, name from songs", result, nrow, ncolumn,
                              pzErrmsg);
+}
+
+int loading_choices(char **choices)
+{
+    char **result = 0;
+    int i, j, nrow, ncol, index, rc;
+    char *errmsg;
+    rc = db_load_songs(&result, &nrow, &ncol, &errmsg);
+    if (rc == 0) {
+        index = ncol;
+        for (i = 0; i < nrow; i++) {
+            for (j = 0; j < ncol; j++) {
+                if (j == 1)
+                {
+                    char *r = (char *)malloc(1 + strlen(result[index-1])+ strlen(result[index]));
+                    sprintf(r, "%s.%s", result[index-1], result[index]);
+                    choices[i] = r;
+                }
+                index++;
+            }
+        }
+    }
+    /* sqlite3_free_table(result); */
+    /* sqlite3_free(errmsg); */
+    return nrow;
 }
