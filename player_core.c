@@ -8,18 +8,22 @@
 #include "player_core.h"
 #include "utils.h"
 #include <cdk.h>
+#include "popen2.h"
+#include <signal.h>
 
 #define PLAYING 1
 #define STOP 0
 #define PAUSE 2
-#define ALIVE 1
+#define ALIVE 0
+#define KILL 1
 
 int status = 0;  /* play status */
-int alive = 0; /* pipe alive false */
-FILE *pp;
+int alive = KILL; /* pipe alive false */
 char buf[512];
 char *FIFO = "/tmp/my_fifo";
 int fd;
+pid_t pid;
+int infp, outfp;
 
 char *merge_str(char *base, char *middle, char *tail)
 {
@@ -36,28 +40,26 @@ void init_player(char *path)
     char *base = "mplayer -slave -quiet -input file=/tmp/my_fifo \"";
     char *tail = "\" < /dev/null 2>&1 &";
     char *result = merge_str(base, path, tail);
-    /* char *result = malloc(strlen(base) + strlen(path) + strlen(tail) + 1); */
-    /* strcpy(result, base); */
-    /* strcat(result, path); */
-    /* strcat(result, tail); */
-    pp = popen(result, "r");
-    int d = fileno(pp);
-    int flags = fcntl(d, F_GETFL, 0);
-    fcntl(d, F_SETFL, flags | O_NONBLOCK);
-    if (pp == NULL) {
-        printf("popen() error!/n");
-        exit(1);
-    }
+    pid = popen2(result, &infp, &outfp);
+    mvprintw(0, 0, "old pid: %d \n", pid);
+    pid += 2;
+    mvprintw(0, 20, "pid is %d\n", pid);
+    refresh();
     status = PLAYING;  /* playing status */
     alive = ALIVE;
     free(result);
 }
 
+int is_alive(void)
+{
+    int code = kill(pid, 0);
+    mvprintw(1, 0, "code: %d", code);
+    return code;
+}
+
 void load_song(char *path)
 {
-    mvprintw(0, 1, "pp is %d\n", pp);
-    refresh();
-    if (alive == ALIVE && pp != NULL)
+    if (alive == ALIVE && is_alive() == ALIVE)
     {
         char *base = "loadfile \"";
         char *tail = "\"\n";
@@ -70,7 +72,7 @@ void load_song(char *path)
     } else {
         init_player(path);
     }
-    mvprintw(0, 20, "pp is %d\n", pp);
+    mvprintw(0, 20, "pid is %d\n", pid);
     refresh();
 }
 
@@ -100,9 +102,9 @@ void pause_song()
 
 void free_player()
 {
-    if (status != STOP)
+    if (status != STOP && is_alive() == ALIVE)
         stop_song();
     status = STOP;
-    alive = 0;
-    pclose(pp);
+    alive = KILL;
+    pclose2(pid);
 }

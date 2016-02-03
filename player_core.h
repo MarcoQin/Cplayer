@@ -1,5 +1,6 @@
 #ifndef _player_core_h_
 #define _player_core_h_
+extern pid;
 void init_player(char *path);
 void load_song(char *path);
 void pause_song();
