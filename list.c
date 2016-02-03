@@ -15,11 +15,18 @@ static char empty[1];
 
 void init_song_menu(char **choices, int n_choices)
 {
+    init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_pair(2, COLOR_CYAN, COLOR_BLACK);
+    init_pair(3, COLOR_MAGENTA, COLOR_BLACK);
     int i;
-    my_items = (ITEM **)calloc(n_choices+1, sizeof(ITEM *));
-    for (i = 0; i < n_choices; ++i)
+    my_items = (ITEM **)calloc(n_choices+2, sizeof(ITEM *));
+    i = 0;
+    for (i = 0; i < n_choices; i++)
+    {
         my_items[i] = new_item(choices[i], empty);
-    my_items[i+1] = NULL;   /* #####THIS IS VERY IMPORTANT !!!!###### */
+        /* my_items[i] = new_item(choices[i], NULL); */
+    }
+    my_items[++i] = NULL;   /* #####THIS IS VERY IMPORTANT !!!!###### */
     my_menu = new_menu(my_items);
 
     /* Create the window to be associated with the menu */
@@ -32,7 +39,7 @@ void init_song_menu(char **choices, int n_choices)
     set_menu_format(my_menu, 15, 1);
 
     /* Set menu mark to the string " * " */
-    set_menu_mark(my_menu, " * ");
+    /* set_menu_mark(my_menu, " * "); */
 
     /* Print a border around the main window and print a title */
     box(my_menu_win, 0, 0);
@@ -52,6 +59,7 @@ void init_song_menu(char **choices, int n_choices)
 void destory_menu()
 {
     /* Unpost and free all the memory taken up */
+    delwin(my_menu_win);
     unpost_menu(my_menu);
     free_menu(my_menu);
 }
@@ -67,9 +75,11 @@ void handle_menu_scroll(int ch)
 {
     switch (ch) {
         case KEY_DOWN:
+        case 'j':
             menu_driver(my_menu, REQ_DOWN_ITEM);
             break;
         case KEY_UP:
+        case 'k':
             menu_driver(my_menu, REQ_UP_ITEM);
             break;
         case KEY_NPAGE:
