@@ -34,7 +34,7 @@ void init_song_menu(char **choices, int n_choices)
 
     /* Set main window and sub window */
     set_menu_win(my_menu, my_menu_win);
-    set_menu_sub(my_menu, derwin(my_menu_win, 15, 79, 3, 1));
+    set_menu_sub(my_menu, derwin(my_menu_win, 17, 77, 3, 2));
     set_menu_format(my_menu, 15, 1);
 
     /* Set menu mark to the string " * " */
