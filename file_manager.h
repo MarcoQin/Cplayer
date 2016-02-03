@@ -1,3 +1,8 @@
+#ifndef _file_manager_h_
+#define _file_manager_h_
 #include <cdk.h>
 
-char *init_file_selector(CDKSCREEN *cdkscreen);
+extern CDKSCREEN *cdkscreen;
+extern CDKFSELECT *fSelect;
+char *init_file_selector(WINDOW *main_win);
+#endif
