@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include "player_core.h"
 #include "utils.h"
+#include "db.h"
 #include <cdk.h>
 #include "popen2.h"
 #include <signal.h>
@@ -20,14 +21,6 @@ int fd;
 pid_t pid;
 int infp, outfp;
 
-char *merge_str(char *base, char *middle, char *tail)
-{
-    char *result = (char *)malloc(strlen(base) + strlen(middle) + strlen(tail) + 1);
-    strcpy(result, base);
-    strcat(result, middle);
-    strcat(result, tail);
-    return result;
-}
 
 void init_player(char *path)
 {
@@ -36,9 +29,9 @@ void init_player(char *path)
     char *tail = "\" < /dev/null 2>&1 &";
     char *result = merge_str(base, path, tail);
     pid = popen2(result, &infp, &outfp);
-    mvprintw(0, 0, "old pid: %d \n", pid);
+    /* mvprintw(0, 0, "old pid: %d \n", pid); */
     pid += 2;
-    mvprintw(0, 20, "pid is %d\n", pid);
+    /* mvprintw(0, 20, "pid is %d\n", pid); */
     refresh();
     status = PLAYING;  /* playing status */
     alive = ALIVE;
@@ -48,12 +41,14 @@ void init_player(char *path)
 int is_alive(void)
 {
     int code = kill(pid, 0);
-    mvprintw(1, 0, "code: %d", code);
+    /* mvprintw(1, 0, "code: %d", code); */
     return code;
 }
 
-void load_song(char *path)
+void load_song(int id)
 {
+    char *path = get_song_path(id);
+    db_update_song_state(PLAYING, id);
     if (alive == ALIVE && is_alive() == ALIVE)
     {
         char *base = "loadfile \"";
@@ -67,7 +62,7 @@ void load_song(char *path)
     } else {
         init_player(path);
     }
-    mvprintw(0, 20, "pid is %d\n", pid);
+    /* mvprintw(0, 20, "pid is %d\n", pid); */
     refresh();
 }
 

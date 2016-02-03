@@ -24,7 +24,6 @@ void init_song_menu(char **choices, int n_choices)
     for (i = 0; i < n_choices; i++)
     {
         my_items[i] = new_item(choices[i], empty);
-        /* my_items[i] = new_item(choices[i], NULL); */
     }
     my_items[++i] = NULL;   /* #####THIS IS VERY IMPORTANT !!!!###### */
     my_menu = new_menu(my_items);

@@ -8,7 +8,7 @@
 extern int pid;
 extern int status;
 void init_player(char *path);
-void load_song(char *path);
+void load_song(int id);
 void pause_song();
 void stop_song();
 void seek(char *seconds);
