@@ -169,10 +169,12 @@ int main()
         case 'n':
             id = get_next_or_previous_song_id(NEXT);
             load_song(id);
+            handle_menu_scroll('j');
             break;
         case 'p':
             id = get_next_or_previous_song_id(PREVIOUS);
             load_song(id);
+            handle_menu_scroll('k');
             break;
         case 10: /* Enter */
             move(0, 0);
