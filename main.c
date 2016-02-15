@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <pwd.h>
 #include "ui.h"
 #include "utils.h"
 #include "db.h"
@@ -99,7 +102,21 @@ int main()
 
     /** db test **/
     db_enable();
-    int rc = db_init("./songs.db");
+    /* int rc = db_init("./songs.db"); */
+    const char *homedir;
+
+    if ((homedir = getenv("HOME")) == NULL) {
+        homedir = getpwuid(getuid())->pw_dir;
+    }
+    char *path = merge_str((char *)homedir, "/.cplayer/", "songs.db");
+    char *main_path = merge_str((char *)homedir, "/.cplayer", "/");
+    if( access( path, F_OK ) == -1 ) {
+        // file doesn't exist
+        status = mkdir(main_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    }
+    int rc = db_init(path);
+    free(path);
+    free(main_path);
     if (rc != 0) {
         fprintf(stderr, "Fail to init db.\n");
     }
@@ -152,8 +169,6 @@ int main()
                 song_name = extract_file_name(filename);
                 db_insert_song(song_name, filename);
                 /* free(song_name); */
-                mvprintw(2, 0, "%s\n", filename);
-                refresh();
                 /* free_items(n_choices); */
                 destory_menu();
                 n_choices = loading_choices(choices);
