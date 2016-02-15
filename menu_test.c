@@ -36,6 +36,7 @@ void stopping(int signum)
     }
     int id = get_next_or_previous_song_id(NEXT);
     load_song(id);
+    update_label_info(id);
     /* mvprintw(0, 0, "next id is: %d\n", id); */
     /* refresh(); */
     sub_pro();
@@ -110,6 +111,7 @@ int main()
     /* n_choices = loading_choices(&choices); */
 
     init_song_menu(choices, n_choices);
+    init_label();
 
 
     int c;
@@ -170,17 +172,20 @@ int main()
             id = get_next_or_previous_song_id(NEXT);
             load_song(id);
             handle_menu_scroll('j');
+            update_label_info(id);
             break;
         case 'p':
             id = get_next_or_previous_song_id(PREVIOUS);
             load_song(id);
             handle_menu_scroll('k');
+            update_label_info(id);
             break;
         case 10: /* Enter */
             move(0, 0);
             clrtoeol();
             id = get_current_selected_song_id();
             load_song(id);
+            update_label_info(id);
             /* mvprintw(4, 0, "Id is: %d\n", id); */
             /* mvprintw(5, 0, "Path is: %s\n", get_song_path(id)); */
             refresh();
