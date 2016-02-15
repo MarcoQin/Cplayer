@@ -12,9 +12,27 @@ A simple music player written in C.
 - **ncurses:** [click here to find out how to install](http://tldp.org/HOWTO/NCURSES-Programming-HOWTO/intro.html#WHERETOGETIT)
 - **CDK(Curses Development Kit):** [download and install](http://invisible-island.net/cdk/#download)
 
-####Compile:
+####Make And Install:
 
-`gcc main.c utils.c ui.c player_core.c popen2.c db.c sqlite3/sqlite3.c file_manager.c -o cplayer -lcdk -lncursesw -lmenuw -lpthread -ldl`
+`make`
+
+`sudo make install`
+
+####Uninstall:
+
+`sudo make uninstall`
+
+####Usage:
+
+- h/j/k/l or ←/↓/↑/→ :  move the cursor
+- a: add songs to list
+- d: delete current selected song from song list
+- <Enter>: play current selected song
+- <Space>: pause/unpause the current playing song
+- s: stop playing
+- n: next song
+- p: previous song
+- q: quit
 
 ####Screenshot:
 
