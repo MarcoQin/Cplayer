@@ -40,8 +40,6 @@ void stopping(int signum)
     int id = get_next_or_previous_song_id(NEXT);
     load_song(id);
     update_label_info(id);
-    /* mvprintw(0, 0, "next id is: %d\n", id); */
-    /* refresh(); */
     sub_pro();
 }
 
@@ -56,34 +54,24 @@ void sub_pro()
     if (child_pid < 0)
         printf("error in fork!");
     else if (child_pid == 0) {
+        // child process
         int code = 0;
         parent_pid = getppid();
-        /* mvwprintw(stdscr, 3, 0, "i am the child process, my process id is %d\n",getpid()); */
-        /* mvwprintw(stdscr, 4, 0, "parent_pid %d\n", parent_pid); */
-        /* mvwprintw(stdscr, 5, 0, "pid is %d\n", pid); */
-        /* refresh(); */
         sleep(2);
         while(1)
         {
             code = kill(pid, 0);
             if (code == 0) {  // alive
-                /* mvwprintw(stdscr, 1, 0, "code is: %d\n", code); */
-                /* refresh(); */
                 sleep(2);
-                /* mvwprintw(stdscr, 1, 0, "alive is: %d\n", code); */
-                /* refresh(); */
             } else {
-                /* mvwprintw(stdscr, 1, 0, "will exit"); */
-                /* refresh(); */
-                kill(parent_pid, SIGUSR1);
+                kill(parent_pid, SIGUSR1);  // custom sinal
                 break;
             }
         }
         exit(1);
     }
     else {
-        /* mvprintw(2, 0, "i am the parent process, my process id is %d\n",getpid()); */
-        /* refresh(); */
+        // parent process
         signal(SIGCHLD, SIG_IGN);
     }
 }
@@ -100,18 +88,18 @@ int main()
     noecho();
     keypad(stdscr, TRUE);
 
-    /** db test **/
+    /** db init**/
     db_enable();
-    /* int rc = db_init("./songs.db"); */
-    const char *homedir;
 
+    const char *homedir;
     if ((homedir = getenv("HOME")) == NULL) {
         homedir = getpwuid(getuid())->pw_dir;
     }
     char *path = merge_str((char *)homedir, "/.cplayer/", "songs.db");
     char *main_path = merge_str((char *)homedir, "/.cplayer", "/");
+
     if( access( path, F_OK ) == -1 ) {
-        // file doesn't exist
+        // file doesn't exist, create one
         status = mkdir(main_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     }
     int rc = db_init(path);
@@ -123,12 +111,12 @@ int main()
 
     char *choices[512];
     n_choices = loading_choices(choices);
+    /** db end **/
 
-    /* char **choices = 0; */
-    /* n_choices = loading_choices(&choices); */
-
+    /** init UI **/
     init_song_menu(choices, n_choices);
     init_label();
+    /** end UI **/
 
 
     int c;
@@ -168,11 +156,8 @@ int main()
             destroyCDKScreen(cdkscreen);
             if (filename != NULL)
             {
-                /* clear(); */
                 song_name = extract_file_name(filename);
                 db_insert_song(song_name, filename);
-                /* free(song_name); */
-                /* free_items(n_choices); */
                 destory_menu();
                 n_choices = loading_choices(choices);
                 init_song_menu(choices, n_choices);
@@ -204,8 +189,6 @@ int main()
             id = get_current_selected_song_id();
             load_song(id);
             update_label_info(id);
-            /* mvprintw(4, 0, "Id is: %d\n", id); */
-            /* mvprintw(5, 0, "Path is: %s\n", get_song_path(id)); */
             refresh();
             pos_menu_cursor(my_menu);
             sub_pro();
