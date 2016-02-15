@@ -19,8 +19,7 @@ int status;
 
 void sub_pro();
 
-void quit(int signum)
-{
+void quit(int signum) {
     free_player();
     destory_menu();
 
@@ -31,10 +30,8 @@ void quit(int signum)
     exit(1);
 }
 
-void stopping(int signum)
-{
-    if (status == STOP)  /* stop */
-    {
+void stopping(int signum) {
+    if (status == STOP) {
         quit(2);
     }
     int id = get_next_or_previous_song_id(NEXT);
@@ -43,14 +40,11 @@ void stopping(int signum)
     sub_pro();
 }
 
-
-void sub_pro()
-{
-    if (child_pid)
-    {
+void sub_pro() {
+    if (child_pid) {
         kill(child_pid, SIGKILL);
     }
-    child_pid=fork();
+    child_pid = fork();
     if (child_pid < 0)
         exit(1);
     else if (child_pid == 0) {
@@ -58,26 +52,23 @@ void sub_pro()
         int code = 0;
         parent_pid = getppid();
         sleep(2);
-        while(1)
-        {
+        while (1) {
             code = kill(pid, 0);
-            if (code == 0) {  // alive
+            if (code == 0) { // alive
                 sleep(2);
             } else {
-                kill(parent_pid, SIGUSR1);  // custom sinal
+                kill(parent_pid, SIGUSR1); // custom signal
                 break;
             }
         }
         exit(1);
-    }
-    else {
+    } else {
         // parent process
         signal(SIGCHLD, SIG_IGN);
     }
 }
 
-int main()
-{
+int main() {
     signal(SIGINT, quit);
     signal(SIGUSR1, stopping);
     int n_choices, id;
@@ -98,7 +89,7 @@ int main()
     char *path = merge_str((char *)homedir, "/.cplayer/", "songs.db");
     char *main_path = merge_str((char *)homedir, "/.cplayer", "/");
 
-    if( access( path, F_OK ) == -1 ) {
+    if (access(path, F_OK) == -1) {
         // file doesn't exist, create one
         status = mkdir(main_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     }
@@ -118,7 +109,6 @@ int main()
     init_song_menu(choices, n_choices);
     init_label();
     /** end UI **/
-
 
     int c;
     char *filename = 0;
@@ -147,7 +137,7 @@ int main()
         case 's':
             stop_song();
             break;
-        case 32:  /* space key */
+        case 32: /* space key */
             pause_song();
             break;
         case 'a':
@@ -155,8 +145,7 @@ int main()
             sleep(1);
             destroyCDKFselect(fSelect);
             destroyCDKScreen(cdkscreen);
-            if (filename != NULL)
-            {
+            if (filename != NULL) {
                 song_name = extract_file_name(filename);
                 db_insert_song(song_name, filename);
                 destory_menu();
@@ -197,7 +186,6 @@ int main()
         }
         wrefresh(my_menu_win);
     }
-
 
     free_items(n_choices);
 

@@ -5,12 +5,10 @@
 #include <sys/wait.h>
 #include "popen2.h"
 
-
 #define READ 0
 #define WRITE 1
 
-pid_t popen22(char **command, int *infp, int *outfp)
-{
+pid_t popen22(char **command, int *infp, int *outfp) {
     int p_stdin[2], p_stdout[2];
     pid_t pid;
 
@@ -21,8 +19,7 @@ pid_t popen22(char **command, int *infp, int *outfp)
 
     if (pid < 0)
         return pid;
-    else if (pid == 0)
-    {
+    else if (pid == 0) {
         close(p_stdin[WRITE]);
         dup2(p_stdin[READ], READ);
         close(p_stdout[READ]);
@@ -46,8 +43,7 @@ pid_t popen22(char **command, int *infp, int *outfp)
     return pid;
 }
 
-pid_t popen2(char *command, int *infp, int *outfp)
-{
+pid_t popen2(char *command, int *infp, int *outfp) {
     int p_stdin[2], p_stdout[2];
     pid_t pid;
 
@@ -58,8 +54,7 @@ pid_t popen2(char *command, int *infp, int *outfp)
 
     if (pid < 0)
         return pid;
-    else if (pid == 0)
-    {
+    else if (pid == 0) {
         close(p_stdin[WRITE]);
         dup2(p_stdin[READ], READ);
         close(p_stdout[READ]);

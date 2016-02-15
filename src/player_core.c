@@ -12,8 +12,7 @@
 #include "popen2.h"
 #include <signal.h>
 
-
-int status = 0;  /* play status */
+int status = 0;   /* play status */
 int alive = KILL; /* pipe alive false */
 char buf[512];
 char *FIFO = "/tmp/my_fifo";
@@ -21,33 +20,28 @@ int fd;
 pid_t pid;
 int infp, outfp;
 
-
-void init_player(char *path)
-{
+void init_player(char *path) {
     mkfifo(FIFO, 0666);
     char *base = "mplayer -slave -quiet -input file=/tmp/my_fifo \"";
     char *tail = "\" < /dev/null 2>&1 &";
     char *result = merge_str(base, path, tail);
     pid = popen2(result, &infp, &outfp);
-    pid += 2;  // handle subprocess
+    pid += 2; // handle subprocess
     refresh();
-    status = PLAYING;  /* playing status */
+    status = PLAYING; /* playing status */
     alive = ALIVE;
     free(result);
 }
 
-int is_alive(void)
-{
+int is_alive(void) {
     int code = kill(pid, 0);
     return code;
 }
 
-void load_song(int id)
-{
+void load_song(int id) {
     char *path = get_song_path(id);
     db_update_song_state(PLAYING, id);
-    if (alive == ALIVE && is_alive() == ALIVE)
-    {
+    if (alive == ALIVE && is_alive() == ALIVE) {
         char *base = "loadfile \"";
         char *tail = "\"\n";
         char *s = merge_str(base, path, tail);
@@ -55,41 +49,35 @@ void load_song(int id)
         write(fd, s, strlen(s));
         close(fd);
         free(s);
-        status = PLAYING;  /* playing status */
+        status = PLAYING; /* playing status */
     } else {
         init_player(path);
     }
     refresh();
 }
 
-void stop_song()
-{
-    if (alive == ALIVE && is_alive() == ALIVE)
-    {
+void stop_song() {
+    if (alive == ALIVE && is_alive() == ALIVE) {
         char *s = "stop\n";
         fd = open(FIFO, O_WRONLY);
         write(fd, s, strlen(s));
         close(fd);
     }
-    status = STOP;  /* playing status */
+    status = STOP; /* playing status */
 }
 
-void pause_song()
-{
-    if (alive == ALIVE && is_alive() == ALIVE)
-    {
+void pause_song() {
+    if (alive == ALIVE && is_alive() == ALIVE) {
         char *s = "pause\n";
         fd = open(FIFO, O_WRONLY);
         write(fd, s, strlen(s));
         close(fd);
-        status = status == PAUSE ? PLAYING : PAUSE;  /* playing status */
+        status = status == PAUSE ? PLAYING : PAUSE; /* playing status */
     }
 }
 
-void seek(char *seconds)
-{
-    if (alive == ALIVE && is_alive() == ALIVE && status == PLAYING)
-    {
+void seek(char *seconds) {
+    if (alive == ALIVE && is_alive() == ALIVE && status == PLAYING) {
         char *base = "seek ";
         char *tail = "\n";
         char *s = merge_str(base, seconds, tail);
@@ -100,8 +88,7 @@ void seek(char *seconds)
     }
 }
 
-void free_player()
-{
+void free_player() {
     if (status != STOP && is_alive() == ALIVE)
         stop_song();
     status = STOP;

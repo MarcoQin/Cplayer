@@ -52,9 +52,9 @@ int db_init(const char *path) {
         "update songs set is_playing = ? where id = ?;";
     static const char *delete_song_query = "delete from songs where id = ?;";
     static const char *get_first_song_id_query =
-                    "select id from songs limit 1;";
+        "select id from songs limit 1;";
     static const char *get_last_song_id_query =
-                    "select id from songs order by id desc limit 1;";
+        "select id from songs order by id desc limit 1;";
     int rc;
     rc = sqlite3_open(path, &db);
     if (rc)
@@ -73,16 +73,16 @@ int db_init(const char *path) {
                             NULL);
     if (rc)
         return rc;
-    rc = sqlite3_prepare_v2(db, get_current_playing_song_query, -1, &get_current_playing_song_stmt,
-                            NULL);
+    rc = sqlite3_prepare_v2(db, get_current_playing_song_query, -1,
+                            &get_current_playing_song_stmt, NULL);
     if (rc)
         return rc;
-    rc = sqlite3_prepare_v2(db, get_next_song_id_query, -1, &get_next_song_id_stmt,
-                            NULL);
+    rc = sqlite3_prepare_v2(db, get_next_song_id_query, -1,
+                            &get_next_song_id_stmt, NULL);
     if (rc)
         return rc;
-    rc = sqlite3_prepare_v2(db, get_previous_song_id_query, -1, &get_previous_song_id_stmt,
-                            NULL);
+    rc = sqlite3_prepare_v2(db, get_previous_song_id_query, -1,
+                            &get_previous_song_id_stmt, NULL);
     if (rc)
         return rc;
     rc = sqlite3_prepare_v2(db, get_first_song_id_query, -1,
@@ -178,8 +178,7 @@ int get_next_or_previous_song_id(int type) {
     if (sqlite3_step(get_current_playing_song_stmt) == SQLITE_ROW) {
         id = sqlite3_column_int(get_current_playing_song_stmt, 0);
     }
-    if (type == NEXT)
-    {
+    if (type == NEXT) {
         sqlite3_reset(get_next_song_id_stmt);
         sqlite3_bind_int(get_next_song_id_stmt, 1, id);
         if (sqlite3_step(get_next_song_id_stmt) == SQLITE_ROW) {
@@ -204,12 +203,11 @@ int get_next_or_previous_song_id(int type) {
 }
 
 int db_load_songs(char ***result, int *nrow, int *ncolumn, char **pzErrmsg) {
-    return sqlite3_get_table(db, "select id, name from songs", result, nrow, ncolumn,
-                             pzErrmsg);
+    return sqlite3_get_table(db, "select id, name from songs", result, nrow,
+                             ncolumn, pzErrmsg);
 }
 
-int loading_choices(char **choices)
-{
+int loading_choices(char **choices) {
     char **result = 0;
     int i, j, nrow, ncol, index, rc;
     char *errmsg;
@@ -218,10 +216,9 @@ int loading_choices(char **choices)
         index = ncol;
         for (i = 0; i < nrow; i++) {
             for (j = 0; j < ncol; j++) {
-                if (j == 1)
-                {
+                if (j == 1) {
                     char *dot = ".";
-                    char *r = merge_str(result[index-1], dot, result[index]);
+                    char *r = merge_str(result[index - 1], dot, result[index]);
                     choices[i] = r;
                 }
                 index++;

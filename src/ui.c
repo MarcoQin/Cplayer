@@ -14,9 +14,7 @@ void print_in_middle(WINDOW *win, int starty, int startx, int width,
                      char *string, chtype color);
 static char empty[1];
 
-
-void init_label()
-{
+void init_label() {
     label = subwin(stdscr, 5, 80, 4, 20);
     box(label, 0, 0);
     print_in_middle(label, 0, 0, 0, "Now Playing", COLOR_PAIR(2));
@@ -24,28 +22,27 @@ void init_label()
     refresh();
 }
 
-void update_label_info(int id)
-{
+void update_label_info(int id) {
     char *name = get_song_name(id);
-    print_in_middle(label, 2, 0, 0, "                                                                              ", COLOR_PAIR(2));
+    print_in_middle(label, 2, 0, 0, "                                          "
+                                    "                                    ",
+                    COLOR_PAIR(2));
     print_in_middle(label, 2, 0, 0, name, COLOR_PAIR(2));
     wrefresh(label);
     refresh();
 }
 
-void init_song_menu(char **choices, int n_choices)
-{
+void init_song_menu(char **choices, int n_choices) {
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_CYAN, COLOR_BLACK);
     init_pair(3, COLOR_MAGENTA, COLOR_BLACK);
     int i;
-    my_items = (ITEM **)calloc(n_choices+2, sizeof(ITEM *));
+    my_items = (ITEM **)calloc(n_choices + 2, sizeof(ITEM *));
     i = 0;
-    for (i = 0; i < n_choices; i++)
-    {
+    for (i = 0; i < n_choices; i++) {
         my_items[i] = new_item(choices[i], empty);
     }
-    my_items[++i] = NULL;   /* #####THIS IS VERY IMPORTANT !!!!###### */
+    my_items[++i] = NULL; /* #####THIS IS VERY IMPORTANT !!!!###### */
     my_menu = new_menu(my_items);
 
     /* Create the window to be associated with the menu */
@@ -72,49 +69,44 @@ void init_song_menu(char **choices, int n_choices)
     wrefresh(my_menu_win);
 }
 
-void destory_menu()
-{
+void destory_menu() {
     /* Unpost and free all the memory taken up */
     delwin(my_menu_win);
     unpost_menu(my_menu);
     free_menu(my_menu);
 }
 
-void free_items(int n_choices)
-{
+void free_items(int n_choices) {
     int i;
     for (i = 0; i < n_choices; ++i)
         free_item(my_items[i]);
 }
 
-void handle_menu_scroll(int ch)
-{
+void handle_menu_scroll(int ch) {
     switch (ch) {
-        case KEY_DOWN:
-        case 'j':
-            menu_driver(my_menu, REQ_DOWN_ITEM);
-            break;
-        case KEY_UP:
-        case 'k':
-            menu_driver(my_menu, REQ_UP_ITEM);
-            break;
-        case KEY_NPAGE:
-            menu_driver(my_menu, REQ_SCR_DPAGE);
-            break;
-        case KEY_PPAGE:
-            menu_driver(my_menu, REQ_SCR_UPAGE);
-            break;
+    case KEY_DOWN:
+    case 'j':
+        menu_driver(my_menu, REQ_DOWN_ITEM);
+        break;
+    case KEY_UP:
+    case 'k':
+        menu_driver(my_menu, REQ_UP_ITEM);
+        break;
+    case KEY_NPAGE:
+        menu_driver(my_menu, REQ_SCR_DPAGE);
+        break;
+    case KEY_PPAGE:
+        menu_driver(my_menu, REQ_SCR_UPAGE);
+        break;
     }
 }
 
-int get_current_selected_song_id()
-{
+int get_current_selected_song_id() {
     int id = extract_song_id(item_name(current_item(my_menu)));
     return id;
 }
 
-const char *get_current_song_name()
-{
+const char *get_current_song_name() {
     const char *name = item_name(current_item(my_menu));
     return name;
 }
