@@ -1,6 +1,5 @@
 #ifndef _db_h_
 #define _db_h_
-#include "sqlite3/sqlite3.h"
 #define NEXT 1
 #define PREVIOUS 0
 

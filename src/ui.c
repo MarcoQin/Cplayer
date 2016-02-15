@@ -57,9 +57,6 @@ void init_song_menu(char **choices, int n_choices)
     set_menu_sub(my_menu, derwin(my_menu_win, 17, 77, 3, 2));
     set_menu_format(my_menu, 15, 1);
 
-    /* Set menu mark to the string " * " */
-    /* set_menu_mark(my_menu, " * "); */
-
     /* Print a border around the main window and print a title */
     box(my_menu_win, 0, 0);
     print_in_middle(my_menu_win, 1, 0, 80, "Song List", COLOR_PAIR(2));

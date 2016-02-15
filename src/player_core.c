@@ -29,9 +29,7 @@ void init_player(char *path)
     char *tail = "\" < /dev/null 2>&1 &";
     char *result = merge_str(base, path, tail);
     pid = popen2(result, &infp, &outfp);
-    /* mvprintw(0, 0, "old pid: %d \n", pid); */
-    pid += 2;
-    /* mvprintw(0, 20, "pid is %d\n", pid); */
+    pid += 2;  // handle subprocess
     refresh();
     status = PLAYING;  /* playing status */
     alive = ALIVE;
@@ -41,7 +39,6 @@ void init_player(char *path)
 int is_alive(void)
 {
     int code = kill(pid, 0);
-    /* mvprintw(1, 0, "code: %d", code); */
     return code;
 }
 
@@ -62,7 +59,6 @@ void load_song(int id)
     } else {
         init_player(path);
     }
-    /* mvprintw(0, 20, "pid is %d\n", pid); */
     refresh();
 }
 

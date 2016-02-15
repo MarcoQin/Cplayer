@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "sqlite3/sqlite3.h"
 #include "db.h"
 #include "utils.h"
 
@@ -99,7 +100,6 @@ int db_init(const char *path) {
     rc = sqlite3_prepare_v2(db, delete_song_query, -1, &delete_song_stmt, NULL);
     if (rc)
         return rc;
-    /* sqlite3_exec(db, "begin;", NULL, NULL, NULL); */
     return 0;
 }
 
@@ -107,7 +107,6 @@ void db_close() {
     if (!db_enabled) {
         return;
     }
-    /* sqlite3_exec(db, "commit;", NULL, NULL, NULL); */
     sqlite3_finalize(insert_song_stmt);
     sqlite3_finalize(update_song_state_stmt);
     sqlite3_finalize(delete_song_stmt);
@@ -221,8 +220,6 @@ int loading_choices(char **choices)
             for (j = 0; j < ncol; j++) {
                 if (j == 1)
                 {
-                    /* char *r = (char *)malloc(1 + strlen(result[index-1])+ strlen(result[index])); */
-                    /* sprintf(r, "%s.%s", result[index-1], result[index]); */
                     char *dot = ".";
                     char *r = merge_str(result[index-1], dot, result[index]);
                     choices[i] = r;
@@ -231,7 +228,5 @@ int loading_choices(char **choices)
             }
         }
     }
-    /* sqlite3_free_table(result); */
-    /* sqlite3_free(errmsg); */
     return nrow;
 }

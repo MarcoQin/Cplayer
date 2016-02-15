@@ -52,7 +52,7 @@ void sub_pro()
     }
     child_pid=fork();
     if (child_pid < 0)
-        printf("error in fork!");
+        exit(1);
     else if (child_pid == 0) {
         // child process
         int code = 0;
@@ -107,6 +107,7 @@ int main()
     free(main_path);
     if (rc != 0) {
         fprintf(stderr, "Fail to init db.\n");
+        exit(1);
     }
 
     char *choices[512];
