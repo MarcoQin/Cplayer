@@ -6,6 +6,8 @@
 extern WINDOW *my_menu_win;
 extern MENU *my_menu;
 
+void init_label();
+void update_label_info(int id);
 void init_song_menu(char **choices, int n_choices);
 void destory_menu();
 void free_items(int n_choices);

@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "list.h"
+#include "db.h"
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 WINDOW *my_menu_win;
+WINDOW *label;
 ITEM **my_items = 0;
 MENU *my_menu;
 
@@ -12,6 +14,25 @@ void print_in_middle(WINDOW *win, int starty, int startx, int width,
                      char *string, chtype color);
 static char empty[1];
 
+
+void init_label()
+{
+    /* WINDOW *label = subwin(stdscr, 5, 80, 2, 20); */
+    label = subwin(stdscr, 7, 80, 2, 20);
+    box(label, 0, 0);
+    print_in_middle(label, 0, 0, 0, "Now Playing", COLOR_PAIR(2));
+    wrefresh(label);
+    refresh();
+}
+
+void update_label_info(int id)
+{
+    char *name = get_song_name(id);
+    print_in_middle(label, 3, 0, 0, "                                                                              ", COLOR_PAIR(2));
+    print_in_middle(label, 3, 0, 0, name, COLOR_PAIR(2));
+    wrefresh(label);
+    refresh();
+}
 
 void init_song_menu(char **choices, int n_choices)
 {
