@@ -22,6 +22,10 @@ A simple music player written in C.
 
 `sudo make uninstall`
 
+####Format Support:
+
+All music files. Including but not limited to: mp3, flac, ape, wav, ogg...
+
 ####Usage:
 
 - **h/j/k/l** or **←/↓/↑/→ :**  move the cursor
