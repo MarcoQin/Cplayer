@@ -37,5 +37,7 @@ A simple music player written in C.
 ####Screenshot:
 
 ![Cplayer-songlist][songlist]
+![Cplayer-screenshot][shot]
 
 [songlist]: https://github.com/MarcoQin/gallery/blob/master/Cplayer/songlist.png
+[shot]: https://github.com/MarcoQin/gallery/blob/master/Cplayer/Screenshot.png

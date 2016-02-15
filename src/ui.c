@@ -17,8 +17,7 @@ static char empty[1];
 
 void init_label()
 {
-    /* WINDOW *label = subwin(stdscr, 5, 80, 2, 20); */
-    label = subwin(stdscr, 7, 80, 2, 20);
+    label = subwin(stdscr, 5, 80, 4, 20);
     box(label, 0, 0);
     print_in_middle(label, 0, 0, 0, "Now Playing", COLOR_PAIR(2));
     wrefresh(label);
@@ -28,8 +27,8 @@ void init_label()
 void update_label_info(int id)
 {
     char *name = get_song_name(id);
-    print_in_middle(label, 3, 0, 0, "                                                                              ", COLOR_PAIR(2));
-    print_in_middle(label, 3, 0, 0, name, COLOR_PAIR(2));
+    print_in_middle(label, 2, 0, 0, "                                                                              ", COLOR_PAIR(2));
+    print_in_middle(label, 2, 0, 0, name, COLOR_PAIR(2));
     wrefresh(label);
     refresh();
 }
