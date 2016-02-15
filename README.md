@@ -40,4 +40,4 @@ A simple music player written in C.
 ![Cplayer-screenshot][shot]
 
 [songlist]: https://github.com/MarcoQin/gallery/blob/master/Cplayer/songlist.png
-[shot]: https://github.com/MarcoQin/gallery/blob/master/Cplayer/Screenshot.png
+[shot]: https://github.com/MarcoQin/gallery/blob/master/Cplayer/screenshot.png
