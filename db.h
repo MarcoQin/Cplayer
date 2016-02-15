@@ -14,6 +14,7 @@ void db_update_song_state(int is_playing, int id);
 void db_delete_song(int id);
 int db_load_songs(char ***result, int *nrow, int *ncolumn, char **pzErrmsg);
 char *get_song_path(int id);
+char *get_song_name(int id);
 int loading_choices(char **choices);
 int get_next_or_previous_song_id(int type);
 
