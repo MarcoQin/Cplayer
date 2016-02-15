@@ -24,15 +24,15 @@ A simple music player written in C.
 
 ####Usage:
 
-- h/j/k/l or ←/↓/↑/→ :  move the cursor
-- a: add songs to list
-- d: delete current selected song from song list
-- <Enter>: play current selected song
-- <Space>: pause/unpause the current playing song
-- s: stop playing
-- n: next song
-- p: previous song
-- q: quit
+- **h/j/k/l** or **←/↓/↑/→ :**  move the cursor
+- **a**: add songs to list
+- **d**: delete current selected song from song list
+- **Enter**: play current selected song
+- **Space**: pause/unpause the current playing song
+- **s**: stop playing
+- **n**: next song
+- **p**: previous song
+- **q**: quit
 
 ####Screenshot:
 
