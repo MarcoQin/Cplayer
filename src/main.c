@@ -155,6 +155,9 @@ int main()
         case 'q':
             quit(2);
             break;
+        case 's':
+            stop_song();
+            break;
         case 32:  /* space key */
             pause_song();
             break;
