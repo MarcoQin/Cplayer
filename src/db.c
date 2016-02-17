@@ -211,13 +211,13 @@ int loading_choices(char **choices) {
     char **result = 0;
     int i, j, nrow, ncol, index, rc;
     char *errmsg;
+    char *dot = ".";
     rc = db_load_songs(&result, &nrow, &ncol, &errmsg);
     if (rc == 0) {
         index = ncol;
         for (i = 0; i < nrow; i++) {
             for (j = 0; j < ncol; j++) {
                 if (j == 1) {
-                    char *dot = ".";
                     char *r = merge_str(result[index - 1], dot, result[index]);
                     choices[i] = r;
                 }
