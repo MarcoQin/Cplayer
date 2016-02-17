@@ -25,9 +25,7 @@ char *init_file_selector(WINDOW *main_win) {
         return filename;
     }
 
-    /* Clean up. */
-    /* destroyCDKFselect(fSelect); */
-    /* destroyCDKScreen(cdkscreen); */
+    /* Clean up on upper level */
 
     return filename;
 }
