@@ -11,7 +11,8 @@ char *parse_p(char *s) {
         i++;
     }
     i = 0;
-    char *r = (char *)malloc(1 + total + strlen(s));
+    char *r = 0;
+    r = (char *)malloc(1 + total + strlen(s));
     while (s[i] != '\0') {
         if (s[i] == ' ') {
             r[j] = '\\';
@@ -64,7 +65,8 @@ char *extract_file_name(char *path) {
             index = i;
         i++;
     }
-    char *r = (char *)malloc(strlen(path) - index + 2);
+    char *r = 0;
+    r = (char *)malloc(strlen(path) - index + 2);
     index++;
     while (path[index] != '\0') {
         r[j++] = path[index++];
@@ -86,7 +88,8 @@ int extract_song_id(const char *name) {
 }
 
 char *merge_str(char *base, char *middle, char *tail) {
-    char *result =
+    char *result = 0;
+    result =
         (char *)malloc(strlen(base) + strlen(middle) + strlen(tail) + 1);
     strcpy(result, base);
     strcat(result, middle);
