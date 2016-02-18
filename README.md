@@ -28,7 +28,8 @@ All music files. Including but not limited to: mp3, flac, ape, wav, ogg...
 
 ####Usage:
 
-- **h/j/k/l** or **←/↓/↑/→ :**  move the cursor
+- **j/k** or **↓/↑ :**  move the cursor down and up
+- **h/l** or **←/→ :**  seek left or right about 20 seconds
 - **a**: add songs to list
 - **d**: delete current selected song from song list
 - **Enter**: play current selected song
