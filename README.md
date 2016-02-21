@@ -39,7 +39,7 @@ All music files. Including but not limited to: mp3, flac, ape, wav, ogg...
 - **p**: previous song
 - **q**: quit
 
-####Screenshot:
+####Screenshots:
 
 ![Cplayer-songlist][songlist]
 
