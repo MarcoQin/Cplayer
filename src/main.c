@@ -38,6 +38,9 @@ void stopping(int signum) {
     load_song(id);
     update_label_info(id);
     sub_pro();
+    handle_menu_scroll('j');
+    wrefresh(my_menu_win);
+    refresh();
 }
 
 void sub_pro() {
