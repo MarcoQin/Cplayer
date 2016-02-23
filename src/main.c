@@ -104,8 +104,8 @@ int main() {
         exit(1);
     }
 
-    char *choices[512];
-    n_choices = loading_choices(choices);
+    char **choices = 0;
+    n_choices = loading_choices(&choices);
     /** db end **/
 
     /** init UI **/
