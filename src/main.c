@@ -151,8 +151,9 @@ int main() {
             if (filename != NULL) {
                 song_name = extract_file_name(filename);
                 db_insert_song(song_name, filename);
+                free_items(n_choices);
                 destory_menu();
-                n_choices = loading_choices(choices);
+                n_choices = loading_choices(&choices);
                 init_song_menu(choices, n_choices);
             }
             break;
@@ -161,7 +162,7 @@ int main() {
             free_items(n_choices);
             destory_menu();
             db_delete_song(id);
-            n_choices = loading_choices(choices);
+            n_choices = loading_choices(&choices);
             init_song_menu(choices, n_choices);
             break;
         case 'n':
