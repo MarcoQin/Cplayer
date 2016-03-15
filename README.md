@@ -1,16 +1,28 @@
 # Cplayer
-A simple music player written in C.
-
-####Requirments:
-
-- **mplayer:**
-    - ubuntu: `sudo apt-get install mplayer`
-    - others: [official site](http://www.mplayerhq.hu/design7/dload.html)
+A simple music player written in C, with ffmpeg surpport.
 
 ####Lib Dependencies:
 
 - **ncurses:** [click here to find out how to install](http://tldp.org/HOWTO/NCURSES-Programming-HOWTO/intro.html#WHERETOGETIT)
 - **CDK(Curses Development Kit):** [download and install](http://invisible-island.net/cdk/#download)
+- **SDL2.0**
+- **ffmpeg:**
+    - make and install the latest ffmpeg:
+        - (maby need: sudo apt-get install yasm)
+        - ./configure --enable-shared
+        - make
+        - sudo make install
+        - if can't find lib*.so:
+
+            sudo vi /etc/ld.so.conf
+            add follow lines:
+                include ld.so.conf.d/*.conf
+                /usr/local/libevent-1.4.14b/lib
+                /usr/local/lib
+
+            then:
+                sudo ldconfig
+
 
 ####Make And Install:
 
