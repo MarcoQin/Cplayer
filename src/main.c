@@ -8,14 +8,14 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <pwd.h>
+#include <pthread.h>
 #include "ui.h"
 #include "utils.h"
 #include "db.h"
 #include "player_core.h"
 #include "file_manager.h"
 
-pid_t parent_pid, child_pid, wpid;
-int status;
+int thread_created = 0;
 
 void sub_pro();
 
@@ -30,9 +30,9 @@ void quit(int signum) {
     exit(1);
 }
 
-void stopping(int signum) {
+void stopping() {
     if (status == STOP) {
-        quit(2);
+        return;
     }
     int id = get_next_or_previous_song_id(NEXT);
     load_song(id);
@@ -43,37 +43,36 @@ void stopping(int signum) {
     refresh();
 }
 
-void sub_pro() {
-    if (child_pid) {
-        kill(child_pid, SIGKILL);
-    }
-    child_pid = fork();
-    if (child_pid < 0)
-        exit(1);
-    else if (child_pid == 0) {
-        // child process
-        int code = 0;
-        parent_pid = getppid();
-        sleep(2);
-        while (1) {
-            code = kill(pid, 0);
-            if (code == 0) { // alive
-                sleep(2);
-            } else {
-                kill(parent_pid, SIGUSR1); // custom signal
-                break;
-            }
+void *check_play_status(void *arg) {
+    sleep(1);
+    while (1){
+        if (!cp_is_stopping()) {
+            sleep(1);
+            continue;
+        } else {
+            stopping();
+            sleep(3);
+            continue;
         }
-        exit(1);
-    } else {
-        // parent process
-        signal(SIGCHLD, SIG_IGN);
     }
+}
+
+void sub_pro() {
+    if (thread_created) {
+        return;
+    }
+    pthread_t tid;
+    int err = pthread_create(&tid, NULL, &check_play_status, NULL);
+    if (err != 0) {
+        fprintf(stderr, "can't create thread\n");
+        quit(2);
+        exit(1);
+    }
+    thread_created = 1;
 }
 
 int main() {
     signal(SIGINT, quit);
-    signal(SIGUSR1, stopping);
     int n_choices, id;
     setlocale(LC_ALL, "");
     initscr();
@@ -94,7 +93,7 @@ int main() {
 
     if (access(path, F_OK) == -1) {
         // file doesn't exist, create one
-        status = mkdir(main_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        int s = mkdir(main_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     }
     int rc = db_init(path);
     free(path);
@@ -128,11 +127,11 @@ int main() {
             break;
         case KEY_RIGHT:
         case 'l':
-            seek("20");
+            seek(20);
             break;
         case KEY_LEFT:
         case 'h':
-            seek("-20");
+            seek(-20);
             break;
         case 'q':
             quit(2);
