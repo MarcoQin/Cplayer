@@ -4,7 +4,7 @@ NAME=cplayer
 
 ODIR=src
 
-LIBS=-lcdk -lncursesw -lmenuw -lpthread -ldl
+LIBS=-lcdk -lncursesw -lmenuw -lpthread -lavformat -lavcodec -lswscale -lavutil -lswresample -lz -ldl `sdl2-config --cflags --libs`
 
 
 _OBJ = main.o\
@@ -14,7 +14,8 @@ _OBJ = main.o\
 	popen2.o\
 	ui.o\
 	utils.o\
-	sqlite3/sqlite3.o
+	sqlite3/sqlite3.o\
+	core/player.o
 
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
