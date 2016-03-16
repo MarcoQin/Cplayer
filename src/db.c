@@ -34,6 +34,12 @@ int db_init(const char *path) {
                                       "   id INTEGER PRIMARY KEY AUTOINCREMENT,"
                                       "   name VARCHAR(255) NOT NULL,"
                                       "   path VARCHAR(512),"
+                                      "   title VARCHAR(512),"
+                                      "   album VARCHAR(512),"
+                                      "   artist VARCHAR(512),"
+                                      "   genre VARCHAR(64),"
+                                      "   track VARCHAR(64),"
+                                      "   date VARCHAR(64),"
                                       "   is_playing INTEGER(2) DEFAULT 0"
                                       ");";
     static const char *insert_song_query = "insert into songs (name, path) "

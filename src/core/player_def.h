@@ -32,9 +32,12 @@
 #define FRAME_QUEUE_SIZE FFMAX(SAMPLE_QUEUE_SIZE, FFMAX(VIDEO_PICTURE_QUEUE_SIZE_MAX, SUBPICTURE_QUEUE_SIZE))
 #define MAX_AUDIOQ_SIZE (5 * 16 * 1024)
 
-
+#ifndef true
 #define true 1
+#endif
+#ifndef false
 #define false 0
+#endif
 
 typedef struct PacketQueue {
     AVPacketList *first_pkt, *last_pkt;
