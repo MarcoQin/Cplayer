@@ -333,6 +333,11 @@ static int read_thread(void *arg) {
     AudioState *is = cp->is;
     AVPacket packet;
 
+    // prepare clean stuff
+    is->audio_buf_index = 0;
+    is->audio_buf_size = 0;
+    is->audio_pkt_size = 0;
+
     // Open audio file
     if (avformat_open_input(&is->format_ctx, cp->input_filename, NULL, NULL) != 0)
         return -1;  // Error
@@ -375,6 +380,7 @@ static int read_thread(void *arg) {
         fprintf(stderr, "Couldn't copy codec context\n");
         return -1;
     }
+
 
     // Open audio device
     audio_open(cp);
@@ -441,9 +447,11 @@ static void stream_close(CPlayer *cp) {
     audio_close();
     if (is->audio_codec_ctx_orig) {
         avcodec_close(is->audio_codec_ctx_orig);
+        is->audio_codec_ctx_orig = NULL;
     }
     if (is->audio_codec_ctx) {
         avcodec_close(is->audio_codec_ctx);
+        is->audio_codec_ctx = NULL;
     }
     if (is->format_ctx) {
         avformat_close_input(&is->format_ctx);
@@ -579,7 +587,8 @@ void cp_stop_audio() {
     AudioState *is = global_cplayer_ctx->is;
     if (!is->stopped) {
         is->stopped = !is->stopped;
-        cp_pause_audio();
+        audio_close();
+        is->audio_opend = 0;
         packet_queue_flush(&is->audio_queue);
         is->duration = 0;
         is->audio_clock = 0;
@@ -654,19 +663,24 @@ CPlayer *cp_load_file(const char *filename) {
             return NULL;
         }
     } else {
+        audio_close();
+        no_more_data_in_the_queue = 0;
         cp = global_cplayer_ctx;
         AudioState *is = cp->is;
+        is->audio_opend = 0;
         is->read_thread_abord = 1;
-        SDL_Delay(500);
+        SDL_WaitThread(is->read_tid, NULL);
         is->read_thread_abord = 0;
         cp->input_filename = av_strdup(filename);
 
         // clean work
         if (is->audio_codec_ctx_orig) {
             avcodec_close(is->audio_codec_ctx_orig);
+            is->audio_codec_ctx_orig = NULL;
         }
         if (is->audio_codec_ctx) {
             avcodec_close(is->audio_codec_ctx);
+            is->audio_codec_ctx = NULL;
         }
         if (is->format_ctx) {
             avformat_close_input(&is->format_ctx);
