@@ -17,6 +17,7 @@ static void dump_metadata(void *ctx, AVDictionary *m, const char *indent);
 /* control */
 void cp_pause_audio();
 void cp_stop_audio();
+void cp_set_volume(int volume);
 void cp_seek_audio(double percent);
 void cp_seek_audio_by_sec(int sec);
 int cp_get_time_length();
